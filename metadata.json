@@ -1,0 +1,6 @@
+{
+  "name": "Blackfame Studios Portfolio",
+  "description": "Ultra-premium cinematic portfolio website for Blackfame Studios, showcasing luxury photography, films, documentaries, and podcasts.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

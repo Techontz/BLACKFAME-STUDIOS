@@ -1,0 +1,58 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Cormorant Garamond", "Playfair Display", serif;
+  --font-display: "Space Grotesk", sans-serif;
+}
+
+/* Hide scrollbar for clean horizontal scrolls */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Premium Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #050505;
+}
+::-webkit-scrollbar-thumb {
+  background: #1f1f1f;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #d4af37;
+}
+
+/* Cinema background glow */
+.gold-glow {
+  filter: blur(140px);
+  background: radial-gradient(circle, rgba(212,175,55,0.06) 0%, rgba(0,0,0,0) 70%);
+}
+
+.charcoal-glow {
+  filter: blur(100px);
+  background: radial-gradient(circle, rgba(255,255,255,0.02) 0%, rgba(0,0,0,0) 80%);
+}
+
+/* Minimal Custom Cursor (re-enabled for viewport) */
+@media (pointer: fine) {
+  .custom-cursor {
+    width: 20px;
+    height: 20px;
+    border: 1px solid rgba(212,175,55,0.4);
+    border-radius: 50%;
+    position: fixed;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 9999;
+    transition: width 0.2s, height 0.2s, background-color 0.2s;
+  }
+}
