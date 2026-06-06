@@ -64,27 +64,41 @@ export default function Hero({ onViewWork }: HeroProps) {
           transition={{ duration: 1.8, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
         >
           Stories
-          <span className="block mt-4 font-serif italic text-white/95 text-4xl sm:text-6xl md:text-7xl lg:text-[5.5rem] tracking-wide font-normal normal-case">
+          <span className="block mt-4 font-serif text-white/95 text-4xl sm:text-6xl md:text-7xl lg:text-[5.5rem] tracking-wide font-normal normal-case">
           That Last Forever
           </span>
         </motion.h1>
 
-         {/* Bespoke Interactive Action */}
+         {/* Bespoke Interactive Actions */}
          <motion.div
-          className="mt-14"
+          className="mt-14 flex flex-col sm:flex-row items-center gap-4"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1.5, delay: 2.0, ease: 'easeOut' }}
         >
+          {/* View Work */}
           <button
             onClick={onViewWork}
             className="group relative px-10 py-4 overflow-hidden rounded-full border border-stone-800 bg-stone-950/40 backdrop-blur-md text-xs tracking-[0.4em] uppercase text-white hover:text-black transition-colors duration-700 font-display"
           >
-            {/* Hover background slide */}
-            <span className="absolute inset-0 w-full h-full bg-[#d4af37] origin-bottom transform scale-y-0 group-hover:scale-y-100 transition-transform duration-700 ease-[0.16, 1, 0.3, 1]" />
+            <span className="absolute inset-0 w-full h-full bg-[#d4af37] origin-bottom transform scale-y-0 group-hover:scale-y-100 transition-transform duration-700 ease-[0.16,1,0.3,1]" />
             <span className="relative z-10 flex items-center gap-3">
               VIEW WORK
               <Play className="w-3 h-3 text-[#d4af37] group-hover:text-black fill-current transition-colors duration-500" />
+            </span>
+          </button>
+
+          {/* Learn More */}
+          <button
+            onClick={() => {
+              const aboutSection = document.getElementById('about');
+              aboutSection?.scrollIntoView({ behavior: 'smooth' });
+            }}
+            className="group relative px-10 py-4 overflow-hidden rounded-full border border-white/20 bg-white/5 backdrop-blur-md text-xs tracking-[0.4em] uppercase text-white hover:border-[#d4af37] transition-all duration-700 font-display"
+          >
+            <span className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <span className="relative z-10">
+              LEARN MORE
             </span>
           </button>
         </motion.div>

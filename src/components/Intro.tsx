@@ -1,207 +1,405 @@
 import { motion } from "motion/react";
-import React, { useEffect, useRef, useState } from "react";
+import "@fontsource/oswald/500.css";
+import CountUp from "react-countup";
+import React, { useState } from "react";
+import AboutStudio from "./AboutStudio";
 
 export default function Intro() {
-  const galleryRef = useRef<HTMLDivElement>(null);
 
-  const [isDragging, setIsDragging] = useState(false);
-  const [startX, setStartX] = useState(0);
-  const [scrollLeft, setScrollLeft] = useState(0);
+  const [selectedCategory, setSelectedCategory] =
+  useState("All");
 
-  const portfolioItems = [
+  const projects = [
     {
-      type: "image",
+      slug: "water-mission-documentary",
       src: "/portfolio/image1.jpg",
-      title: "Campaign Shoot",
-      category: "Commercial · 2026",
+      title: "Water Mission Documentary",
+      category: "NGO Project",
+      type: "Documentary",
     },
   
     {
-      type: "image",
+      slug: "real-estate-launch",
       src: "/portfolio/image2.jpg",
-      title: "Fashion Editorial",
-      category: "Fashion · 2026",
+      title: "Real Estate Launch",
+      category: "Development",
+      type: "Real Estate",
     },
   
     {
-      type: "video",
-      src: "/portfolio/video1.mp4",
-      title: "Brand Film",
-      category: "Film · 2026",
-    },
-  
-    {
-      type: "image",
+      slug: "brand-campaign",
       src: "/portfolio/image3.jpg",
-      title: "Portrait Session",
-      category: "Portrait · 2026",
+      title: "Brand Campaign",
+      category: "Commercial",
+      type: "Commercial",
     },
   
     {
-      type: "image",
+      slug: "community-impact-story",
       src: "/portfolio/image4.jpg",
-      title: "Music Video",
-      category: "Production · 2026",
+      title: "Community Impact Story",
+      category: "NGO",
+      type: "Impact Story",
     },
   
     {
-      type: "video",
-      src: "/portfolio/video2.mp4",
-      title: "Commercial Story",
-      category: "Commercial · 2026",
-    },
-  
-    {
-      type: "image",
+      slug: "corporate-film",
       src: "/portfolio/image5.jpg",
-      title: "Lifestyle Campaign",
-      category: "Content · 2026",
+      title: "Corporate Film",
+      category: "Corporate",
+      type: "Corporate Film",
     },
   
     {
-      type: "image",
+      slug: "event-documentary",
       src: "/portfolio/image6.jpg",
-      title: "Visual Narrative",
-      category: "Creative · 2026",
+      title: "Event Documentary",
+      category: "Events",
+      type: "Events",
     },
   ];
 
-  // Triple copy for infinite effect
-  const items = [...portfolioItems, ...portfolioItems, ...portfolioItems];
-
-  useEffect(() => {
-    const gallery = galleryRef.current;
-
-    if (!gallery) return;
-
-    const center = gallery.scrollWidth / 3;
-    gallery.scrollLeft = center;
-
-    const handleWheel = (e: WheelEvent) => {
-      e.preventDefault();
-
-      gallery.scrollLeft += e.deltaY;
-
-      const max =
-        gallery.scrollWidth - gallery.clientWidth;
-
-      if (gallery.scrollLeft > max - 1000) {
-        gallery.scrollLeft = center;
-      }
-
-      if (gallery.scrollLeft < 1000) {
-        gallery.scrollLeft = center;
-      }
-    };
-
-    gallery.addEventListener("wheel", handleWheel, {
-      passive: false,
-    });
-
-    return () => {
-      gallery.removeEventListener(
-        "wheel",
-        handleWheel
+  const filteredProjects =
+  selectedCategory === "All"
+    ? projects
+    : projects.filter(
+        (project) =>
+          project.type === selectedCategory
       );
-    };
-  }, []);
 
-  const handleMouseDown = (
-    e: React.MouseEvent<HTMLDivElement>
-  ) => {
-    if (!galleryRef.current) return;
-
-    setIsDragging(true);
-
-    setStartX(
-      e.pageX - galleryRef.current.offsetLeft
-    );
-
-    setScrollLeft(galleryRef.current.scrollLeft);
-  };
-
-  const handleMouseLeave = () => {
-    setIsDragging(false);
-  };
-
-  const handleMouseUp = () => {
-    setIsDragging(false);
-  };
-
-  const handleMouseMove = (
-    e: React.MouseEvent<HTMLDivElement>
-  ) => {
-    if (!isDragging || !galleryRef.current) return;
-
-    e.preventDefault();
-
-    const x =
-      e.pageX - galleryRef.current.offsetLeft;
-
-    const walk = (x - startX) * 1.8;
-
-    galleryRef.current.scrollLeft =
-      scrollLeft - walk;
-  };
+  const clients = [
+    { logo: "/clients/brimon.png", name: "Brimon" },
+    { logo: "/clients/dstv.png", name: "DSTV" },
+    { logo: "/clients/stanbic.png", name: "Stanbic" },
+    { logo: "/clients/micnics.png", name: "Micnics" },
+    { logo: "/clients/yas.png", name: "YAS" },
+    { logo: "/clients/rare-bespoke.png", name: "Rare Bespoke" },
+    { logo: "/clients/hyatt.png", name: "Hyatt" },
+    { logo: "/clients/nibadilishe.png", name: "Nibadilishe" },
+    { logo: "/clients/manful.png", name: "Manful" },
+    { logo: "/clients/crdb.png", name: "CRDB" },
+  ];
 
   return (
-    <section className="relative overflow-hidden bg-[#151515]">
+    <section
+      id="about"
+      className="relative overflow-hidden bg-black"
+    >
 
       <div className="absolute inset-0 bg-gradient-to-b from-[#1d1d1d] via-[#151515] to-[#111111]" />
 
-      {/* PHILOSOPHY */}
+      <AboutStudio
+        onPortfolio={() => {
+          const portfolioSection =
+            document.getElementById("portfolio");
 
-      <div className="relative z-10 min-h-screen flex items-center justify-center px-6">
+          portfolioSection?.scrollIntoView({
+            behavior: "smooth",
+          });
+        }}
+      />
 
-        <div className="max-w-6xl mx-auto text-center">
+      {/* STATS BAR */}
 
-          <div className="w-px h-20 bg-[#d4af37] mx-auto mb-10" />
+      <section
+        className="
+        relative
+        z-10
 
-          <span className="text-[#d4af37] uppercase tracking-[0.5em] text-xs">
-            THE BLACKFAME PHILOSOPHY
-          </span>
+        bg-[#101010]
+
+        border-t
+        border-b
+        border-white/[0.05]
+        "
+      >
+        <div
+          className="
+          grid
+          grid-cols-2
+          lg:grid-cols-4
+          "
+        >
+          {[
+            {
+              value: 10,
+              suffix: "+",
+              label: "BRAND COLLABORATIONS",
+            },
+            {
+              value: 5,
+              suffix: "+",
+              label: "YEARS EXPERIENCE",
+            },
+            {
+              value: 1000000,
+              suffix: "M+",
+              label: "SOCIAL REACH",
+              isMillion: true,
+            },
+            {
+              value: 5,
+              suffix: "",
+              label: "INDUSTRY VERTICALS",
+            },
+          ].map((item, index) => (
+            <motion.div
+              key={index}
+              initial={{
+                opacity: 0,
+                y: 20,
+              }}
+              whileInView={{
+                opacity: 1,
+                y: 0,
+              }}
+              viewport={{
+                once: true,
+              }}
+              transition={{
+                duration: 0.7,
+                delay: index * 0.1,
+              }}
+              className="
+              relative
+
+              flex
+              flex-col
+              justify-center
+              items-center
+
+              h-[210px]
+              lg:h-[230px]
+
+              border-r
+              border-white/[0.04]
+
+              overflow-hidden
+              "
+            >
+              {/* subtle gradient */}
+
+              <div
+                className="
+                absolute
+                inset-0
+
+                bg-gradient-to-r
+                from-white/[0.04]
+                via-white/[0.02]
+                to-white/[0.04]
+                "
+              />
+
+              {/* NUMBER */}
+
+              <h3
+              style={{
+                fontFamily: "Oswald",
+                fontWeight: 400,
+              }}
+              className="
+                relative
+                z-10
+
+                text-white
+
+                text-[58px]
+                md:text-[68px]
+                lg:text-[78px]
+
+                leading-[0.9]
+                tracking-[-0.04em]
+              "
+            >
+            {item.isMillion ? (
+            <CountUp
+              start={100000}
+              end={1000000}
+              duration={3.5}
+              separator=","
+              redraw
+              formattingFn={(value) => {
+                if (value >= 990000) {
+                  return "1M+";
+                }
+              
+                return `${Math.round(value / 1000)}K`;
+              }}
+            />
+          ) : (
+            <>
+              <CountUp
+                start={0}
+                end={item.value}
+                duration={2}
+                redraw
+              />
+              {item.suffix}
+            </>
+          )}
+            </h3>
+
+              {/* LABEL */}
+
+              <p
+                className="
+                relative
+                z-10
+
+                mt-8
+
+                text-[10px]
+
+                uppercase
+                tracking-[0.45em]
+
+                text-white/30
+                "
+              >
+                {item.label}
+              </p>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      {/* SOME OF OUR CLIENTS */}
+
+      <section
+        className="
+        relative
+        z-10
+
+        py-32
+
+        bg-[#0d0d0d]
+
+        border-t
+        border-b
+        border-white/[0.04]
+
+        overflow-hidden
+        "
+      >
+        <div className="max-w-7xl mx-auto px-6">
+
+          {/* HEADER */}
+
+          <div className="text-center">
+
+          <p
+            className="
+            uppercase
+            tracking-[0.45em]
+            text-[11px]
+            text-[#d4af37]
+            "
+          >
+            TRUSTED BY LEADING ORGANIZATIONS
+          </p>
 
           <h2
             className="
-            mt-10
+            mt-5
             text-white
             font-serif
             font-light
-            leading-[1.15]
-            text-4xl
-            sm:text-5xl
-            md:text-6xl
-            lg:text-7xl
-            xl:text-8xl"
+            text-5xl
+            md:text-7xl
+            lg:text-8xl
+            leading-tight
+            "
           >
-            Every frame carries emotion.
-            <br />
-            Every story deserves cinema.
-            <br />
-            Every legacy deserves
-            <br />
-            to be remembered.
+            Clients & Partners
           </h2>
 
-          <div className="mt-14">
-            <span className="uppercase tracking-[0.45em] text-[11px] text-stone-500">
-              EST. 2018 — DAR ES SALAAM
-            </span>
           </div>
 
-        </div>
+          <div className="mt-24 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
 
-      </div>
+          {clients.map((client, index) => (
+
+          <motion.div
+            key={client.name}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{
+              duration: 0.6,
+              delay: index * 0.05,
+            }}
+            className="
+            group
+
+            flex
+            flex-col
+            items-center
+            justify-center
+
+            py-10
+
+            transition-all
+            duration-700
+            "
+          >
+
+            <img
+              src={client.logo}
+              className="
+              max-h-[65px]
+              w-auto
+
+              object-contain
+
+              group-hover:scale-110
+
+              transition-all
+              duration-700
+              "
+            />
+
+            <p
+              className="
+              mt-6
+
+              text-white/40
+
+              text-center
+
+              uppercase
+              tracking-[0.25em]
+
+              text-[10px]
+
+              group-hover:text-[#d4af37]
+
+              transition-colors
+              duration-500
+              "
+            >
+              {client.name}
+            </p>
+
+          </motion.div>
+
+          ))}
+
+        </div>
+        </div>
+      </section>
 
       {/* PORTFOLIO */}
 
-      <div className="relative z-10 py-24">
-
+      <div
+        id="projects"
+        className="relative z-10 py-24"
+      >
         <div className="text-center px-6 mb-20">
 
-          <span className="text-[#d4af37] uppercase tracking-[0.45em] text-xs">
-            THE PORTFOLIO
-          </span>
+        <span className="text-[#d4af37] uppercase tracking-[0.45em] text-xs">
+          SELECTED WORK
+        </span>
 
           <h3
             className="
@@ -213,7 +411,7 @@ export default function Intro() {
             md:text-7xl
             lg:text-8xl"
           >
-            Visual Legacy
+            Projects
           </h3>
 
           <p
@@ -224,149 +422,181 @@ export default function Intro() {
             text-stone-400
             leading-relaxed"
           >
-            Luxury weddings, fashion,
-            documentaries and cinematic
-            storytelling crafted through
-            the BlackFame lens.
+            A collection of campaigns,
+            documentaries, commercial films,
+            brand stories and visual experiences
+            created for organizations and brands.
           </p>
 
-        </div>
-
-        {/* DELEUNUSUAL STYLE GALLERY */}
-
-        <div
-          ref={galleryRef}
-          onMouseDown={handleMouseDown}
-          onMouseMove={handleMouseMove}
-          onMouseLeave={handleMouseLeave}
-          onMouseUp={handleMouseUp}
-          className="
-          flex
-          gap-[2px]
-          overflow-x-auto
-          scrollbar-hide
-          cursor-grab
-          active:cursor-grabbing
-          select-none
-          w-full"
-        >
-          {items.map((item, index) => (
-            <div
-            key={index}
+          <div
             className="
-              flex-shrink-0
-              relative
-              group
+            mt-12
+
+            flex
+            flex-wrap
+            justify-center
+
+            gap-3
             "
           >
-            {item.type === "image" ? (
-              <img
-                src={item.src}
-                alt=""
-                draggable={false}
-                className="
-                  w-[280px]
-                  sm:w-[320px]
-                  md:w-[360px]
-                  lg:w-[380px]
-                  xl:w-[420px]
-          
-                  h-[520px]
-                  sm:h-[560px]
-                  md:h-[620px]
-                  lg:h-[700px]
-          
-                  object-cover
-                "
-              />
-            ) : (
-              <video
-                autoPlay
-                muted
-                loop
-                playsInline
-                className="
-                  w-[280px]
-                  sm:w-[320px]
-                  md:w-[360px]
-                  lg:w-[380px]
-                  xl:w-[420px]
-          
-                  h-[520px]
-                  sm:h-[560px]
-                  md:h-[620px]
-                  lg:h-[700px]
-          
-                  object-cover
-                "
-              >
-                <source src={item.src} type="video/mp4" />
-              </video>
-            )}
-          
-            {/* ADD THIS HERE */}
-            <div
-              className="
-                absolute
-                inset-0
-                bg-gradient-to-t
-                from-black/80
-                via-black/20
-                to-transparent
-          
-                opacity-0
-                group-hover:opacity-100
-          
-                transition-all
-                duration-500
-              "
-            />
-          
-            {/* TITLE BLOCK */}
-            <div
-              className="
-                absolute
-                bottom-8
-                left-8
-                z-20
-          
-                opacity-0
-                translate-y-4
-          
-                group-hover:opacity-100
-                group-hover:translate-y-0
-          
-                transition-all
-                duration-500
-              "
-            >
-              <h4
-                className="
-                  text-white
-                  font-serif
-                  italic
-                  text-3xl
-                "
-              >
-                {item.title}
-              </h4>
-          
-              <p
-                className="
-                  mt-2
-                  uppercase
-                  tracking-[0.35em]
-                  text-[11px]
-                  text-white/60
-                "
-              >
-                {item.category}
-              </p>
-            </div>
-          </div>
-          ))}
-        </div>
+          {[
+            "All",
+            "Commercial",
+            "Documentary",
+            "Corporate Film",
+            "Events",
+            "Real Estate",
+            "Impact Story",
+          ].map((category) => (
+            <button
+              key={category}
+              onClick={() =>
+                setSelectedCategory(category)
+              }
+              className={`
+                px-5
+                py-2
 
+                border
+                text-sm
+
+                transition-all
+                duration-300
+
+                ${
+                  selectedCategory === category
+                    ? "bg-[#d4af37] text-black border-[#d4af37]"
+                    : "border-white/10 text-white/70 hover:bg-[#d4af37] hover:text-black hover:border-[#d4af37]"
+                }
+              `}
+            >
+              {category}
+            </button>
+          ))}
+          </div>
+          <div className="max-w-7xl mx-auto px-6 mt-20">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+           {filteredProjects.map((project, index) => (
+              <motion.a
+                key={project.slug}
+                href={`/projects/${project.slug}`}
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{
+                  duration: 0.7,
+                  delay: index * 0.1,
+                }}
+                className="group block"
+              >
+                <div className="relative overflow-hidden">
+
+                  <img
+                    src={project.src}
+                    alt={project.title}
+                    className="
+                    w-full
+                    h-[520px]
+                    object-cover
+                    transition-all
+                    duration-700
+                    group-hover:scale-105
+                    "
+                  />
+
+                  <div
+                    className="
+                    absolute
+                    inset-0
+                    bg-gradient-to-t
+                    from-black/70
+                    via-black/10
+                    to-transparent
+                    "
+                  />
+
+                <div
+                  className="
+                  absolute
+                  bottom-6
+                  left-1/2
+                  -translate-x-1/2
+
+                  z-20
+
+                  w-[85%]
+                  "
+                >
+                  <div
+                    className="
+                    bg-black/70
+                    backdrop-blur-sm
+
+                    border
+                    border-white/10
+
+                    px-6
+                    py-5
+
+                    text-center
+                    "
+                  >
+                    <p
+                      className="
+                      text-[#d4af37]
+                      uppercase
+                      tracking-[0.3em]
+                      text-[10px]
+                      "
+                    >
+                      {project.category}
+                    </p>
+
+                    <h4
+                    className="
+                    mt-2
+
+                    text-white
+
+                    font-serif
+                    font-light
+
+                    text-xl
+                    md:text-2xl
+
+                    whitespace-nowrap
+                    overflow-hidden
+                    text-ellipsis
+                    "
+                  >
+                    {project.title}
+                  </h4>
+
+                  <p
+                    className="
+                    mt-3
+
+                    text-white/50
+
+                    uppercase
+                    tracking-[0.2em]
+
+                    text-[11px]
+                    "
+                  >
+                    {project.type}
+                  </p>
+                  </div>
+                </div>
+
+                </div>
+              </motion.a>
+            ))}
+
+          </div>
+        </div>
+        </div>
       </div>
 
     </section>

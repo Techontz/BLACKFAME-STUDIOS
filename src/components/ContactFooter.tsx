@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Sparkles, Calendar, Check, Send, Instagram, Youtube, Linkedin } from 'lucide-react';
+import { Sparkles, Calendar, Check } from 'lucide-react';
 
 export default function ContactFooter() {
   const [formData, setFormData] = useState({
@@ -40,25 +40,41 @@ export default function ContactFooter() {
   };
 
   return (
-    <footer className="relative bg-[#0c0c0c] w-full border-t border-stone-900" id="contact">
+    <footer className="relative bg-[#101010] w-full border-t border-stone-900" id="contact">
       {/* Contact Form Section */}
-      <section className="relative min-h-screen py-24 px-6 md:px-12 flex items-center justify-center border-b border-stone-950">
-        
-        {/* Soft Golden Background Glow */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[75vw] h-[50vh] gold-glow opacity-10 pointer-events-none" />
+      <section className="relative min-h-screen py-32 px-6 md:px-12 flex items-center justify-center overflow-hidden">
 
+        {/* Luxury Background */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0e0e0e] via-[#101010] to-[#0d0d0d]" />
         <div className="max-w-4xl mx-auto w-full space-y-14 relative z-10">
           
           {/* Header Block */}
-          <div className="text-center space-y-4">
-            <span className="font-display text-[10px] tracking-[0.5em] text-[#d4af37] block uppercase">
-              C O N N E C T &nbsp; W I T H &nbsp; U S
+          <div className="text-center max-w-4xl mx-auto space-y-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+          >
+            <span className="inline-flex items-center gap-2 px-5 py-2 rounded-full border border-[#d4af37]/20 bg-[#d4af37]/5 text-[#d4af37] text-[10px] tracking-[0.4em] uppercase">
+              <Sparkles className="w-3 h-3" />
+              Start Your Project
             </span>
-            <h2 className="font-serif text-4xl sm:text-6xl text-white font-extralight tracking-widest leading-tight uppercase">
-              Let’s Create <br/>
-              <span className="font-light italic tracking-normal text-stone-200">Something Timeless.</span>
-            </h2>
-          </div>
+          </motion.div>
+
+          <h2 className="font-serif text-5xl sm:text-7xl lg:text-110px text-white font-light leading-none tracking-[-0.05em]">
+            Let's Build
+            <br />
+            <span className="text-[#d4af37]">
+              Something Extraordinary
+            </span>
+          </h2>
+
+          <p className="max-w-2xl mx-auto text-stone-400 text-base sm:text-lg leading-relaxed">
+            From cinematic documentaries and brand storytelling to commercial productions,
+            every project begins with a conversation.
+          </p>
+        </div>
 
           <AnimatePresence mode="wait">
             {!isSuccess ? (
@@ -69,8 +85,18 @@ export default function ContactFooter() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -30 }}
                 transition={{ duration: 0.8 }}
-                className="space-y-8 bg-stone-950/60 p-8 sm:p-12 rounded-xl border border-stone-900 backdrop-blur-xl"
-              >
+                className="
+                  relative
+                  overflow-hidden
+                  space-y-8
+                  bg-white/[0.02]
+                  p-8
+                  sm:p-14
+                  rounded-lg
+                  border border-white/[0.06]
+                  backdrop-blur-xl
+                  "
+                >
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                   {/* Name field */}
                   <div className="space-y-2">
@@ -84,7 +110,10 @@ export default function ContactFooter() {
                       name="name"
                       value={formData.name}
                       onChange={handleChange}
-                      className="w-full bg-black/60 border border-stone-850 rounded px-4 py-3.5 text-sm text-stone-200 focus:outline-none focus:border-[#d4af37] transition-all duration-300 font-sans tracking-wide"
+                      className="w-full bg-white/[0.03]
+                      border border-white/10
+                      rounded-xl
+                      px-4 py-3.5 text-sm text-stone-200 focus:outline-none focus:border-[#d4af37] transition-all duration-300 font-sans tracking-wide"
                       placeholder="e.g. Sterling Hunt"
                     />
                   </div>
@@ -101,7 +130,10 @@ export default function ContactFooter() {
                       name="email"
                       value={formData.email}
                       onChange={handleChange}
-                      className="w-full bg-black/60 border border-stone-850 rounded px-4 py-3.5 text-sm text-stone-200 focus:outline-none focus:border-[#d4af37] transition-all duration-300 font-sans tracking-wide"
+                      className="w-full bg-white/[0.03]
+                      border border-white/10
+                      rounded-xl
+                      px-4 py-3.5 text-sm text-stone-200 focus:outline-none focus:border-[#d4af37] transition-all duration-300 font-sans tracking-wide"
                       placeholder="e.g. sterling@luxury.com"
                     />
                   </div>
@@ -119,35 +151,116 @@ export default function ContactFooter() {
                       name="phone"
                       value={formData.phone}
                       onChange={handleChange}
-                      className="w-full bg-black/60 border border-stone-850 rounded px-4 py-3.5 text-sm text-stone-200 focus:outline-none focus:border-[#d4af37] transition-all duration-300 font-sans tracking-wide"
-                      placeholder="e.g. +1 415 888 9999"
+                      className="w-full bg-white/[0.03]
+                      border border-white/10
+                      rounded-xl
+                      px-4 py-3.5 text-sm text-stone-200 focus:outline-none focus:border-[#d4af37] transition-all duration-300 font-sans tracking-wide"
+                      placeholder="e.g. +255 712 345 678"
                     />
                   </div>
 
-                  {/* Project Type dropdown */}
-                  <div className="space-y-2">
-                    <label htmlFor="projectType" className="text-[10px] tracking-[0.3em] font-display text-stone-400 uppercase font-medium">
+                  {/* Project Type */}
+                  <div className="space-y-3">
+                    <label
+                      htmlFor="projectType"
+                      className="text-[10px] tracking-[0.35em] font-display text-[#d4af37] uppercase font-semibold"
+                    >
                       PROJECT TYPE
                     </label>
-                    <select
-                      id="projectType"
-                      name="projectType"
-                      value={formData.projectType}
-                      onChange={handleChange}
-                      className="w-full bg-stone-950 border border-stone-850 rounded px-4 py-3.5 text-sm text-stone-200 focus:outline-none focus:border-[#d4af37] transition-all duration-300 font-sans tracking-wide cursor-pointer"
-                    >
-                      <option value="Photography">Photography Production</option>
-                      <option value="Films">Motion Films & Script</option>
-                      <option value="Documentaries">Festival Documentary</option>
-                      <option value="Podcasts">Creative Studio Podcast</option>
-                      <option value="Commercial Productions">Commercial Production</option>
-                      <option value="Brand Storytelling">Brand Storytelling</option>
-                    </select>
-                  </div>
-                </div>
 
-                {/* Message field */}
-                <div className="space-y-2">
+                    <div className="relative group">
+                      <select
+                        id="projectType"
+                        name="projectType"
+                        value={formData.projectType}
+                        onChange={handleChange}
+                        className="
+                          w-full
+                          appearance-none
+                          rounded-md
+                          bg-white/[0.025]
+                          border-white/[0.05]
+                          border
+                          border-white/10
+                          px-5
+                          py-4
+                          pr-14
+                          text-sm
+                          text-white
+                          backdrop-blur-xl
+                          focus:outline-none
+                          focus:border-[#d4af37]
+                          focus:ring-2
+                          focus:ring-[#d4af37]/20
+                          transition-all
+                          duration-300
+                          cursor-pointer
+                          hover:border-[#d4af37]/40
+                        "
+                      >
+                        <option className="bg-black text-white" value="Photography">
+                          Photography Production
+                        </option>
+
+                        <option className="bg-black text-white" value="Films">
+                          Motion Films & Script
+                        </option>
+
+                        <option className="bg-black text-white" value="Documentaries">
+                          Documentary Production
+                        </option>
+
+                        <option className="bg-black text-white" value="Commercial">
+                          Commercial Campaign
+                        </option>
+
+                        <option className="bg-black text-white" value="Podcast">
+                          Podcast Production
+                        </option>
+
+                        <option className="bg-black text-white" value="Brand">
+                          Brand Storytelling
+                        </option>
+
+                        <option className="bg-black text-white" value="Event">
+                          Event Coverage
+                        </option>
+
+                        <option className="bg-black text-white" value="Other">
+                          Other Creative Project
+                        </option>
+                      </select>
+
+                      {/* Custom Arrow */}
+                      <div className="pointer-events-none absolute inset-y-0 right-5 flex items-center">
+                        <svg
+                          className="w-4 h-4 text-[#d4af37] transition-transform duration-300 group-hover:translate-y-0.5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M19 9l-7 7-7-7"
+                          />
+                        </svg>
+                      </div>
+
+                      {/* Premium Glow */}
+                      <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                    </div>
+
+                    <p className="text-[11px] text-stone-500 tracking-wide">
+                    Select the service that best matches your creative vision.
+                  </p>
+                  </div>
+
+                  </div> {/* END OF grid grid-cols-1 sm:grid-cols-2 gap-8 */}
+
+                  {/* Message field */}
+                  <div className="space-y-2">
                   <label htmlFor="message" className="text-[10px] tracking-[0.3em] font-display text-stone-400 uppercase font-medium">
                     YOUR VISION
                   </label>
@@ -157,7 +270,10 @@ export default function ContactFooter() {
                     name="message"
                     value={formData.message}
                     onChange={handleChange}
-                    className="w-full bg-black/60 border border-stone-850 rounded px-4 py-3.5 text-sm text-stone-200 focus:outline-none focus:border-[#d4af37] transition-all duration-300 font-sans tracking-wide resize-none"
+                    className="w-full bg-white/[0.03]
+                    border border-white/10
+                    rounded-xl
+                    px-4 py-3.5 text-sm text-stone-200 focus:outline-none focus:border-[#d4af37] transition-all duration-300 font-sans tracking-wide resize-none"
                     placeholder="Describe the mood, target medium, and visual message you want to cement forever..."
                   />
                 </div>
@@ -222,58 +338,237 @@ export default function ContactFooter() {
         </div>
       </section>
 
-      {/* Main Clean Footer Section */}
-      <section className="bg-black py-12 px-6 sm:px-12 border-t border-stone-900/50 relative z-20">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8 text-center md:text-left">
-          
-          {/* Logo Name */}
-          <div className="space-y-1">
-            <span className="font-serif tracking-[0.35em] text-white font-light text-xl block uppercase">
-              BLACKFAME <span className="text-[#d4af37] italic font-normal">STUDIOS</span>
+      <section className="bg-black border-t border-stone-900 relative overflow-hidden">
+
+      <div className="max-w-7xl mx-auto px-6 md:px-12 py-24">
+
+        <div className="grid lg:grid-cols-2 gap-20">
+
+          {/* LEFT SIDE */}
+          <div>
+
+            <span className="text-[10px] tracking-[0.5em] text-stone-500 uppercase block mb-8">
+              Get In Touch
             </span>
-            <span className="font-display text-[8px] tracking-[0.4em] text-stone-600 block uppercase">
-              Stories That Live Beyond Time
+            <h2 className="font-serif leading-none tracking-[-0.05em]">
+
+            <span
+              className="
+                block
+                text-white
+                text-5xl
+                sm:text-7xl
+                lg:text-8xl
+                font-light
+              "
+            >
+              Let's
             </span>
+
+            <span
+              className="
+                block
+                italic
+                text-[#d4af37]
+                text-5xl
+                sm:text-7xl
+                lg:text-8xl
+                font-light
+              "
+            >
+              Create
+            </span>
+
+            </h2>
+
+            <p className="
+              max-w-lg
+              mt-12
+              text-stone-400
+              leading-[1.9]
+              text-lg
+              font-serif
+            ">
+              Looking for a creative partner to bring your story to life?
+              Let's create cinematic work that leaves a lasting impression.
+            </p>
+
+            <a
+              href="mailto:hello@blackfamestudios.com"
+              className="
+              inline-flex
+              items-center
+              gap-3
+              mt-12
+              font-display
+              text-[11px]
+              tracking-[0.35em]
+              uppercase
+              text-white
+              border-b
+              border-stone-800
+              pb-4
+              hover:text-[#d4af37]
+              transition-all
+              duration-500
+              "
+            >
+              hello@blackfamestudios.com
+              <span>→</span>
+            </a>
+
           </div>
 
-          {/* Social icons */}
-          <div className="flex gap-6">
-            <a
-              href="https://instagram.com"
-              target="_blank"
-              rel="noreferrer"
-              className="text-stone-500 hover:text-[#d4af37] transition-all duration-300"
-              aria-label="Instagram"
-            >
-              <Instagram className="w-5 h-5" />
-            </a>
-            <a
-              href="https://youtube.com"
-              target="_blank"
-              rel="noreferrer"
-              className="text-stone-500 hover:text-[#d4af37] transition-all duration-300"
-              aria-label="YouTube"
-            >
-              <Youtube className="w-5 h-5" />
-            </a>
-            <a
-              href="https://linkedin.com"
-              target="_blank"
-              rel="noreferrer"
-              className="text-stone-500 hover:text-[#d4af37] transition-all duration-300"
-              aria-label="LinkedIn"
-            >
-              <Linkedin className="w-5 h-5" />
-            </a>
-          </div>
+          {/* RIGHT SIDE */}
+          <div>
 
-          {/* Copyright notice */}
-          <div className="text-[10px] tracking-widest text-stone-600 font-display">
-            &copy; {new Date().getFullYear()} BLACKFAME STUDIOS. ALL RIGHTS RESERVED.
+          <span
+            className="
+              block
+              mb-8
+              text-[10px]
+              tracking-[0.45em]
+              uppercase
+              text-stone-600
+            "
+          >
+            FIND ME ON
+          </span>
+
+          {[
+            {
+              name: "Instagram",
+              username: "@BLACKFAMESTUDIOS",
+              link: "https://instagram.com/blackfamestudios",
+            },
+            {
+              name: "TikTok",
+              username: "@BLACKFAMESTUDIOS",
+              link: "https://tiktok.com/@blackfamestudios",
+            },
+            {
+              name: "X (Twitter)",
+              username: "@BLACKFAMESTUDIOS",
+              link: "https://twitter.com/blackfamestudios",
+            },
+            {
+              name: "LinkedIn",
+              username: "@BLACKFAMESTUDIOS",
+              link: "https://linkedin.com/blackfamestudios",
+            },
+            {
+              name: "YouTube",
+              username: "@BLACKFAMESTUDIOS",
+              link: "https://youtube.com/@blackfamestudios",
+            },
+          ].map((item) => (
+            <a
+              key={item.name}
+              href={item.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="
+                group
+                flex
+                items-center
+                justify-between
+                border-b
+                border-white/10
+                py-7
+                transition-all
+                duration-500
+              "
+            >
+              <span
+                className="
+                  font-serif
+                  text-[20px]
+                  md:text-[24px]
+                  font-light
+                  text-white
+                  leading-none
+                  tracking-[-0.02em]
+                  transition-all
+                  duration-500
+                  group-hover:text-[#d4af37]
+                "
+              >
+                {item.name}
+              </span>
+
+              <div className="flex items-center gap-8">
+
+                <span
+                  className="
+                    uppercase
+                    text-[8px]
+                    tracking-[0.42em]
+                    text-stone-500
+                    transition-all
+                    duration-500
+                    group-hover:text-stone-300
+                  "
+                >
+                  {item.username}
+                </span>
+
+                <div
+                  className="
+                    opacity-0
+                    translate-x-[-8px]
+                    transition-all
+                    duration-500
+                    group-hover:opacity-100
+                    group-hover:translate-x-0
+                  "
+                >
+                  <svg
+                    width="13"
+                    height="13"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="0.8"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="text-white"
+                  >
+                    <path d="M7 17L17 7" />
+                    <path d="M8 7H17V16" />
+                  </svg>
+                </div>
+
+              </div>
+            </a>
+          ))}
+
           </div>
+          </div>
+        {/* Bottom Bar */}
+
+        <div className="border-t border-stone-900 mt-24 pt-10 flex flex-col md:flex-row justify-between items-center gap-6">
+
+        <img
+          src="/logo.png"
+          alt="BlackFame Studios"
+          className="
+            h-6
+            md:h-8
+            w-auto
+            object-contain
+            select-none
+          "
+        />
+
+          <span className="text-[10px] tracking-[0.3em] uppercase text-stone-600">
+            © {new Date().getFullYear()} BLACKFAME STUDIOS. ALL RIGHTS RESERVED.
+          </span>
 
         </div>
-      </section>
+
+      </div>
+
+    </section>
     </footer>
   );
 }
