@@ -1,20 +1,33 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
-</div>
+# BlackFame Studios
 
-# Run and deploy your AI Studio app
+Marketing website for BlackFame Studios — React 19, Vite, Tailwind CSS 4 and Motion, deployed on Vercel.
 
-This contains everything you need to run your app locally.
+## Run locally
 
-View your app in AI Studio: https://ai.studio/apps/8f0ead72-46af-405a-96a7-82fc733baf4a
+```bash
+npm install
+npm run dev      # http://localhost:3000
+npm run build    # production build into dist/
+npm run lint     # type check
+```
 
-## Run Locally
+## Contact form
 
-**Prerequisites:**  Node.js
+Enquiries are sent by the Vercel function in `api/contact.ts` using [Resend](https://resend.com).
+Set these in Vercel → Project → Settings → Environment Variables (see `.env.example`):
 
+| Variable | Purpose |
+| --- | --- |
+| `RESEND_API_KEY` | Required to send email. Without it, the form opens the visitor's email app with the message pre-filled. |
+| `CONTACT_TO_EMAIL` | Inbox that receives enquiries. Defaults to `hello@blackfamestudios.com`. |
+| `CONTACT_FROM_EMAIL` | Sender address on a domain verified in Resend. |
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+`npm run dev` doesn't run the `/api` function, so locally the form always uses the email-app fallback. Use `vercel dev` to test real delivery.
+
+## Images
+
+Static assets live in `public/`:
+
+- `public/clients/<name>.png` — client logos (see the list in `src/components/Intro.tsx`). Missing logos show the client's name instead.
+- `public/team/<name>.jpg` — team portraits (see `src/components/TeamSection.tsx`). Missing photos show the person's initials.
+- `public/portfolio/` — project images, `public/videos/` — hero video.

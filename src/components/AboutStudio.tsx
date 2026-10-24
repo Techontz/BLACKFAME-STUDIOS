@@ -1,4 +1,5 @@
 import { motion } from "motion/react";
+import { requestContact } from "../lib/navigation";
 
 export default function AboutStudio({
     onPortfolio,
@@ -6,7 +7,7 @@ export default function AboutStudio({
     onPortfolio: () => void;
   }) {
   return (
-    <section className="relative min-h-screen bg-[#0d0d0d] overflow-hidden pt-40 lg:pt-22 pb-32 lg:pb-30">
+    <section className="relative min-h-screen bg-[#0d0d0d] overflow-hidden pt-40 lg:pt-24 pb-32 lg:pb-32">
 
       {/* Background */}
 
@@ -59,10 +60,14 @@ export default function AboutStudio({
 
             <img
               src="/portfolio/image1.jpg"
+              alt="BlackFame Studios on set"
+              loading="lazy"
+              decoding="async"
               className="
               w-full
 
-              h-[650px]
+              h-[460px]
+              md:h-[650px]
 
               object-cover
               "
@@ -303,9 +308,13 @@ export default function AboutStudio({
             Explore Portfolio
             </button>
 
-            <a
-                href="/BlackFame-Portfolio.pdf"
-                download
+            <button
+                type="button"
+                onClick={() =>
+                  requestContact({
+                    message: "Please send me your studio portfolio (PDF).",
+                  })
+                }
                 className="
                     w-full
                     sm:w-[220px]
@@ -333,8 +342,8 @@ export default function AboutStudio({
                     transition-all
                 "
                 >
-                Download Portfolio
-                </a>
+                Request Portfolio
+                </button>
             </div>
             <p
                 className="

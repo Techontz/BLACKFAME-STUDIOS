@@ -1,11 +1,12 @@
-"use client";
+import { motion } from "motion/react";
+import ImageWithFallback from "./ImageWithFallback";
 
-import { motion } from "framer-motion";
-import {
-  Linkedin,
-  Instagram,
-  Globe,
-} from "lucide-react";
+const initials = (name: string) =>
+  name
+    .split(" ")
+    .map((part) => part[0])
+    .slice(0, 2)
+    .join("");
 
 export default function TeamSection() {
   const team = [
@@ -146,9 +147,22 @@ export default function TeamSection() {
               "
               >
 
-                <img
+                <ImageWithFallback
                   src={member.image}
                   alt={member.name}
+                  loading="lazy"
+                  decoding="async"
+                  fallback={
+                    <div
+                      role="img"
+                      aria-label={member.name}
+                      className="w-full aspect-[3/4] flex items-center justify-center bg-gradient-to-b from-[#1a1a1a] to-[#0b0b0b] transition-all duration-700 group-hover:scale-[1.04]"
+                    >
+                      <span className="font-serif text-5xl text-[#d4af37]/70 tracking-wider">
+                        {initials(member.name)}
+                      </span>
+                    </div>
+                  }
                   className="
                   w-full
                   aspect-[3/4]
@@ -203,60 +217,6 @@ export default function TeamSection() {
                       {member.bio}
                     </p>
 
-                    <div className="flex gap-2 mt-5">
-
-                      <button
-                        className="
-                        w-8
-                        h-8
-                        border
-                        border-white/15
-                        flex
-                        items-center
-                        justify-center
-                        hover:border-[#d4af37]
-                        hover:text-[#d4af37]
-                        transition-all
-                      "
-                      >
-                        <Linkedin size={14} />
-                      </button>
-
-                      <button
-                        className="
-                        w-8
-                        h-8
-                        border
-                        border-white/15
-                        flex
-                        items-center
-                        justify-center
-                        hover:border-[#d4af37]
-                        hover:text-[#d4af37]
-                        transition-all
-                      "
-                      >
-                        <Instagram size={14} />
-                      </button>
-
-                      <button
-                        className="
-                        w-8
-                        h-8
-                        border
-                        border-white/15
-                        flex
-                        items-center
-                        justify-center
-                        hover:border-[#d4af37]
-                        hover:text-[#d4af37]
-                        transition-all
-                      "
-                      >
-                        <Globe size={14} />
-                      </button>
-
-                    </div>
 
                   </div>
 

@@ -9,11 +9,13 @@ import {
   PenTool,
   Landmark,
 } from "lucide-react";
+import { requestContact } from "../lib/navigation";
 
 export default function ServicesPreview() {
   const services = [
     {
       icon: Film,
+      projectType: "Documentaries",
       title: "Documentary Production",
       category: "Storytelling",
       description:
@@ -21,6 +23,7 @@ export default function ServicesPreview() {
     },
     {
       icon: Building2,
+      projectType: "Films",
       title: "Corporate Films",
       category: "Corporate",
       description:
@@ -28,6 +31,7 @@ export default function ServicesPreview() {
     },
     {
       icon: Camera,
+      projectType: "Photography",
       title: "Photography",
       category: "Visual Media",
       description:
@@ -35,6 +39,7 @@ export default function ServicesPreview() {
     },
     {
       icon: FileVideo,
+      projectType: "Event",
       title: "Event Coverage",
       category: "Events",
       description:
@@ -42,6 +47,7 @@ export default function ServicesPreview() {
     },
     {
       icon: Plane,
+      projectType: "Other",
       title: "Drone Services",
       category: "Aerial Production",
       description:
@@ -49,6 +55,7 @@ export default function ServicesPreview() {
     },
     {
       icon: Landmark,
+      projectType: "Documentaries",
       title: "Infrastructure Documentation",
       category: "Development",
       description:
@@ -56,6 +63,7 @@ export default function ServicesPreview() {
     },
     {
       icon: Mic,
+      projectType: "Podcast",
       title: "Podcast Production",
       category: "Audio",
       description:
@@ -63,6 +71,7 @@ export default function ServicesPreview() {
     },
     {
       icon: PenTool,
+      projectType: "Brand",
       title: "Content Development",
       category: "Strategy",
       description:
@@ -217,6 +226,13 @@ export default function ServicesPreview() {
                 </p>
 
                 <button
+                  type="button"
+                  onClick={() =>
+                    requestContact({
+                      projectType: service.projectType,
+                      message: `I'm interested in your ${service.title} service.`,
+                    })
+                  }
                   className="
                   mt-8
 
@@ -239,7 +255,7 @@ export default function ServicesPreview() {
                   transition-all
                 "
                 >
-                  Learn More
+                  Enquire
                 </button>
               </motion.div>
             );
@@ -251,6 +267,8 @@ export default function ServicesPreview() {
         <div className="text-center mt-24">
 
           <button
+            type="button"
+            onClick={() => requestContact()}
             className="
             px-10
             py-4
@@ -270,7 +288,7 @@ export default function ServicesPreview() {
             transition-all
           "
           >
-            View All Services
+            Start Your Project
           </button>
 
         </div>

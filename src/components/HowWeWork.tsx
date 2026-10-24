@@ -105,9 +105,9 @@ export default function HowWeWork() {
       <div className="absolute bottom-[-30%] left-[-10%] w-[500px] h-[500px] rounded-full bg-white/[0.02] blur-[140px] pointer-events-none" />
 
       <div className="relative z-10 max-w-6xl mx-auto px-6">
-        <div className="grid lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] gap-12 lg:gap-16 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] gap-12 lg:gap-16 items-center">
           {/* LEFT — header + step list */}
-          <div>
+          <div className="min-w-0">
             <motion.div
               initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}

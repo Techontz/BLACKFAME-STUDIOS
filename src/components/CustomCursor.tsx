@@ -1,72 +1,66 @@
 import { useEffect, useState } from 'react';
 import { motion, useMotionValue, useSpring } from 'motion/react';
 
+const INTERACTIVE_SELECTOR =
+  'button, a, [role="button"], input, textarea, select, .interactive-card';
+
 export default function CustomCursor() {
+  const [enabled, setEnabled] = useState(false);
   const [visible, setVisible] = useState(false);
   const [hovered, setHovered] = useState(false);
-  
+
   const cursorX = useMotionValue(-100);
   const cursorY = useMotionValue(-100);
-  
+
   const springConfig = { damping: 40, stiffness: 400, mass: 0.5 };
   const cursorXSpring = useSpring(cursorX, springConfig);
   const cursorYSpring = useSpring(cursorY, springConfig);
 
+  // Only show the custom cursor on devices with a precise pointer (mouse/trackpad)
   useEffect(() => {
+    const query = window.matchMedia('(pointer: fine)');
+    const update = () => setEnabled(query.matches);
+
+    update();
+    query.addEventListener('change', update);
+    return () => query.removeEventListener('change', update);
+  }, []);
+
+  useEffect(() => {
+    if (!enabled) return;
+
     const moveCursor = (e: MouseEvent) => {
       cursorX.set(e.clientX);
       cursorY.set(e.clientY);
-      if (!visible) setVisible(true);
-    };
-
-    const handleMouseLeave = () => {
-      setVisible(false);
-    };
-
-    const handleMouseEnter = () => {
       setVisible(true);
     };
 
-    window.addEventListener('mousemove', moveCursor);
-    document.addEventListener('mouseleave', handleMouseLeave);
-    document.addEventListener('mouseenter', handleMouseEnter);
-
-    const handleLinkHover = () => setHovered(true);
-    const handleLinkLeave = () => setHovered(false);
-
-    const updateHoverListeners = () => {
-      const targets = document.querySelectorAll('button, a, [role="button"], input, textarea, select, .interactive-card');
-      targets.forEach((target) => {
-        target.addEventListener('mouseenter', handleLinkHover);
-        target.addEventListener('mouseleave', handleLinkLeave);
-      });
+    // One delegated listener instead of attaching to every interactive element
+    const handleOver = (e: MouseEvent) => {
+      const target = e.target as Element | null;
+      setHovered(Boolean(target?.closest?.(INTERACTIVE_SELECTOR)));
     };
 
-    // Listeners for hover transitions
-    updateHoverListeners();
-    const observer = new MutationObserver(updateHoverListeners);
-    observer.observe(document.body, { childList: true, subtree: true });
+    const handleMouseLeave = () => setVisible(false);
+
+    window.addEventListener('mousemove', moveCursor, { passive: true });
+    document.addEventListener('mouseover', handleOver, { passive: true });
+    document.documentElement.addEventListener('mouseleave', handleMouseLeave);
 
     return () => {
       window.removeEventListener('mousemove', moveCursor);
-      document.removeEventListener('mouseleave', handleMouseLeave);
-      document.removeEventListener('mouseenter', handleMouseEnter);
-      observer.disconnect();
-      const targets = document.querySelectorAll('button, a, [role="button"], .interactive-card');
-      targets.forEach((target) => {
-        target.removeEventListener('mouseenter', handleLinkHover);
-        target.removeEventListener('mouseleave', handleLinkLeave);
-      });
+      document.removeEventListener('mouseover', handleOver);
+      document.documentElement.removeEventListener('mouseleave', handleMouseLeave);
     };
-  }, [cursorX, cursorY, visible]);
+  }, [enabled, cursorX, cursorY]);
 
-  if (!visible) return null;
+  if (!enabled || !visible) return null;
 
   return (
     <>
       {/* Dynamic Cursor spot */}
       <motion.div
-        className="custom-cursor hidden md:block"
+        className="custom-cursor"
         style={{
           left: cursorXSpring,
           top: cursorYSpring,
@@ -78,7 +72,7 @@ export default function CustomCursor() {
       />
       {/* Innermost focused dot */}
       <motion.div
-        className="fixed w-1.5 h-1.5 bg-[#d4af37] rounded-full pointer-events-none z-[99999] transform -translate-x-1/2 -translate-y-1/2 hidden md:block"
+        className="fixed w-1.5 h-1.5 bg-[#d4af37] rounded-full pointer-events-none z-[99999] transform -translate-x-1/2 -translate-y-1/2"
         style={{
           left: cursorX,
           top: cursorY,

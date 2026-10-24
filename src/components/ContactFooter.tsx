@@ -1,37 +1,91 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Sparkles, Calendar, Check } from 'lucide-react';
+import {
+  CONTACT_EMAIL,
+  CONTACT_REQUEST_EVENT,
+  type ContactRequest,
+} from '../lib/navigation';
+
+const emptyForm = {
+  name: '',
+  email: '',
+  phone: '',
+  projectType: 'Photography',
+  message: '',
+  company: '', // honeypot, hidden from real visitors
+};
+
+// Opens the visitor's email app with the enquiry pre-filled.
+function openMailDraft(form: typeof emptyForm) {
+  const body = [
+    `Name: ${form.name}`,
+    `Email: ${form.email}`,
+    `Phone: ${form.phone || '—'}`,
+    `Project type: ${form.projectType}`,
+    '',
+    form.message,
+  ].join('\n');
+
+  window.location.href = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(
+    `New ${form.projectType} enquiry — ${form.name}`
+  )}&body=${encodeURIComponent(body)}`;
+}
 
 export default function ContactFooter() {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    projectType: 'Photography',
-    message: ''
-  });
-  
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
+  const [formData, setFormData] = useState(emptyForm);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [result, setResult] = useState<'sent' | 'mail-app' | null>(null);
+  const [error, setError] = useState('');
+
+  // Pre-fill the form when another section asks to start a conversation
+  useEffect(() => {
+    const onRequest = (e: Event) => {
+      const { projectType, message } = (e as CustomEvent<ContactRequest>).detail;
+      setResult(null);
+      setFormData((prev) => ({
+        ...prev,
+        projectType: projectType ?? prev.projectType,
+        message: message ?? prev.message,
+      }));
+    };
+
+    window.addEventListener(CONTACT_REQUEST_EVENT, onRequest);
+    return () => window.removeEventListener(CONTACT_REQUEST_EVENT, onRequest);
+  }, []);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name || !formData.email) return;
 
     setIsSubmitting(true);
-    // Simulate luxury API submission delay
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setIsSuccess(true);
-      // Clean form state
-      setFormData({
-        name: '',
-        email: '',
-        phone: '',
-        projectType: 'Photography',
-        message: ''
+    setError('');
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
       });
-    }, 2000);
+
+      if (response.ok) {
+        setResult('sent');
+        setFormData(emptyForm);
+      } else if (response.status === 400) {
+        const data = await response.json().catch(() => ({}));
+        setError(data.error || 'Please check your details and try again.');
+      } else {
+        // Email service unavailable: hand off to the visitor's mail app
+        openMailDraft(formData);
+        setResult('mail-app');
+      }
+    } catch {
+      openMailDraft(formData);
+      setResult('mail-app');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -62,7 +116,7 @@ export default function ContactFooter() {
             </span>
           </motion.div>
 
-          <h2 className="font-serif text-5xl sm:text-7xl lg:text-110px text-white font-light leading-none tracking-[-0.05em]">
+          <h2 className="font-serif text-5xl sm:text-7xl lg:text-[110px] text-white font-light leading-none tracking-[-0.05em]">
             Let's Build
             <br />
             <span className="text-[#d4af37]">
@@ -77,7 +131,7 @@ export default function ContactFooter() {
         </div>
 
           <AnimatePresence mode="wait">
-            {!isSuccess ? (
+            {!result ? (
               <motion.form
                 key="contact-form"
                 onSubmit={handleSubmit}
@@ -97,6 +151,18 @@ export default function ContactFooter() {
                   backdrop-blur-xl
                   "
                 >
+                {/* Honeypot: hidden from people, filled in by spam bots */}
+                <input
+                  type="text"
+                  name="company"
+                  value={formData.company}
+                  onChange={handleChange}
+                  tabIndex={-1}
+                  autoComplete="off"
+                  aria-hidden="true"
+                  className="absolute -left-[9999px] w-px h-px opacity-0"
+                />
+
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                   {/* Name field */}
                   <div className="space-y-2">
@@ -114,6 +180,8 @@ export default function ContactFooter() {
                       border border-white/10
                       rounded-xl
                       px-4 py-3.5 text-sm text-stone-200 focus:outline-none focus:border-[#d4af37] transition-all duration-300 font-sans tracking-wide"
+                      autoComplete="name"
+                      maxLength={120}
                       placeholder="e.g. Sterling Hunt"
                     />
                   </div>
@@ -134,6 +202,8 @@ export default function ContactFooter() {
                       border border-white/10
                       rounded-xl
                       px-4 py-3.5 text-sm text-stone-200 focus:outline-none focus:border-[#d4af37] transition-all duration-300 font-sans tracking-wide"
+                      autoComplete="email"
+                      maxLength={200}
                       placeholder="e.g. sterling@luxury.com"
                     />
                   </div>
@@ -155,6 +225,8 @@ export default function ContactFooter() {
                       border border-white/10
                       rounded-xl
                       px-4 py-3.5 text-sm text-stone-200 focus:outline-none focus:border-[#d4af37] transition-all duration-300 font-sans tracking-wide"
+                      autoComplete="tel"
+                      maxLength={40}
                       placeholder="e.g. +255 712 345 678"
                     />
                   </div>
@@ -179,7 +251,6 @@ export default function ContactFooter() {
                           appearance-none
                           rounded-md
                           bg-white/[0.025]
-                          border-white/[0.05]
                           border
                           border-white/10
                           px-5
@@ -274,9 +345,16 @@ export default function ContactFooter() {
                     border border-white/10
                     rounded-xl
                     px-4 py-3.5 text-sm text-stone-200 focus:outline-none focus:border-[#d4af37] transition-all duration-300 font-sans tracking-wide resize-none"
+                    maxLength={5000}
                     placeholder="Describe the mood, target medium, and visual message you want to cement forever..."
                   />
                 </div>
+
+                {error && (
+                  <p role="alert" className="text-center text-sm text-red-400">
+                    {error}
+                  </p>
+                )}
 
                 {/* Button Action */}
                 <div className="pt-6 text-center">
@@ -286,7 +364,7 @@ export default function ContactFooter() {
                     className="group relative px-12 py-4 rounded-full border border-stone-800 bg-stone-950 hover:bg-[#d4af37] text-white hover:text-black hover:border-[#d4af37] transition-all duration-700 text-xs tracking-[0.4em] uppercase font-display select-none disabled:opacity-50"
                   >
                     <span className="relative z-10 flex items-center justify-center gap-3">
-                      {isSubmitting ? 'SECURED INGEST...' : 'BOOK PROJECT'}
+                      {isSubmitting ? 'SENDING...' : 'BOOK PROJECT'}
                       <Calendar className="w-4 h-4 text-[#d4af37] group-hover:text-black transition-colors" />
                     </span>
                   </button>
@@ -300,7 +378,7 @@ export default function ContactFooter() {
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 1.0, ease: [0.16, 1, 0.3, 1] }}
-                className="bg-stone-950/80 border border-stone-850 p-12 rounded-xl text-center flex flex-col items-center justify-center space-y-6 max-w-2xl mx-auto backdrop-blur-xl outline outline-offset-4 outline-[#d4af37]/20"
+                className="bg-stone-950/80 border border-stone-800 p-12 rounded-xl text-center flex flex-col items-center justify-center space-y-6 max-w-2xl mx-auto backdrop-blur-xl outline outline-offset-4 outline-[#d4af37]/20"
               >
                 <motion.div
                   initial={{ scale: 0 }}
@@ -313,22 +391,32 @@ export default function ContactFooter() {
 
                 <div className="space-y-2">
                   <span className="text-[#d4af37] font-display text-[9px] tracking-[0.5em] uppercase font-bold">
-                    TRANSMISSION SECURED
+                    {result === 'sent' ? 'MESSAGE RECEIVED' : 'ALMOST THERE'}
                   </span>
                   <h3 className="font-serif text-3xl text-white font-light tracking-widest uppercase">
-                    Our Curators Await
+                    {result === 'sent' ? 'Thank You' : 'Send From Your Email'}
                   </h3>
                   <p className="text-xs sm:text-sm text-stone-400 font-sans max-w-md mx-auto leading-relaxed tracking-wide font-light">
-                    Your artistic vision has been transmitted directly into our legacy vaults. We will contact you on your personal channel within 24 standard hours.
+                    {result === 'sent' ? (
+                      'Your enquiry is with our team. We will get back to you within 24 hours.'
+                    ) : (
+                      <>
+                        We've opened your email app with your message ready to go — just press send.
+                        If nothing opened, email us directly at{' '}
+                        <a href={`mailto:${CONTACT_EMAIL}`} className="text-[#d4af37] underline underline-offset-4">
+                          {CONTACT_EMAIL}
+                        </a>.
+                      </>
+                    )}
                   </p>
                 </div>
 
                 <div className="pt-4">
                   <button
-                    onClick={() => setIsSuccess(false)}
+                    onClick={() => setResult(null)}
                     className="text-[10px] tracking-[0.3em] font-display text-[#d4af37] hover:text-white uppercase border-b border-[#d4af37]/20 hover:border-white transition-colors duration-500 pb-1"
                   >
-                    SEND ANOTHER VISION
+                    SEND ANOTHER MESSAGE
                   </button>
                 </div>
               </motion.div>
@@ -394,7 +482,7 @@ export default function ContactFooter() {
             </p>
 
             <a
-              href="mailto:hello@blackfamestudios.com"
+              href={`mailto:${CONTACT_EMAIL}`}
               className="
               inline-flex
               items-center
@@ -413,7 +501,7 @@ export default function ContactFooter() {
               duration-500
               "
             >
-              hello@blackfamestudios.com
+              {CONTACT_EMAIL}
               <span>→</span>
             </a>
 
@@ -432,7 +520,7 @@ export default function ContactFooter() {
               text-stone-600
             "
           >
-            FIND ME ON
+            FIND US ON
           </span>
 
           {[
@@ -454,7 +542,7 @@ export default function ContactFooter() {
             {
               name: "LinkedIn",
               username: "@BLACKFAMESTUDIOS",
-              link: "https://linkedin.com/blackfamestudios",
+              link: "https://www.linkedin.com/company/blackfamestudios",
             },
             {
               name: "YouTube",

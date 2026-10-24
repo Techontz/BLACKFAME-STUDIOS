@@ -1,13 +1,31 @@
-import { motion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import "@fontsource/oswald/500.css";
 import CountUp from "react-countup";
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
+import { X } from "lucide-react";
 import AboutStudio from "./AboutStudio";
+import ImageWithFallback from "./ImageWithFallback";
+import { requestContact, scrollToSection } from "../lib/navigation";
 
 export default function Intro() {
 
   const [selectedCategory, setSelectedCategory] =
   useState("All");
+  const [openSlug, setOpenSlug] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!openSlug) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpenSlug(null);
+    };
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [openSlug]);
 
   const projects = [
     {
@@ -67,6 +85,8 @@ export default function Intro() {
           project.type === selectedCategory
       );
 
+  const openProject = projects.find((project) => project.slug === openSlug);
+
   const clients = [
     { logo: "/clients/brimon.png", name: "Brimon" },
     { logo: "/clients/dstv.png", name: "DSTV" },
@@ -88,16 +108,7 @@ export default function Intro() {
 
       <div className="absolute inset-0 bg-gradient-to-b from-[#1d1d1d] via-[#151515] to-[#111111]" />
 
-      <AboutStudio
-        onPortfolio={() => {
-          const portfolioSection =
-            document.getElementById("portfolio");
-
-          portfolioSection?.scrollIntoView({
-            behavior: "smooth",
-          });
-        }}
-      />
+      <AboutStudio onPortfolio={() => scrollToSection("projects")} />
 
       {/* STATS BAR */}
 
@@ -344,8 +355,16 @@ export default function Intro() {
             "
           >
 
-            <img
+            <ImageWithFallback
               src={client.logo}
+              alt={client.name}
+              loading="lazy"
+              decoding="async"
+              fallback={
+                <span className="flex h-[65px] items-center font-serif text-2xl md:text-3xl text-white/70 tracking-wide group-hover:scale-110 transition-all duration-700">
+                  {client.name}
+                </span>
+              }
               className="
               max-h-[65px]
               w-auto
@@ -360,6 +379,7 @@ export default function Intro() {
             />
 
             <p
+              aria-hidden="true"
               className="
               mt-6
 
@@ -478,9 +498,11 @@ export default function Intro() {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
 
            {filteredProjects.map((project, index) => (
-              <motion.a
+              <motion.button
+                type="button"
                 key={project.slug}
-                href={`/projects/${project.slug}`}
+                onClick={() => setOpenSlug(project.slug)}
+                aria-label={`View ${project.title}`}
                 initial={{ opacity: 0, y: 40 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -488,16 +510,19 @@ export default function Intro() {
                   duration: 0.7,
                   delay: index * 0.1,
                 }}
-                className="group block"
+                className="group block w-full text-left"
               >
                 <div className="relative overflow-hidden">
 
                   <img
                     src={project.src}
                     alt={project.title}
+                    loading="lazy"
+                    decoding="async"
                     className="
                     w-full
-                    h-[520px]
+                    h-[440px]
+                    md:h-[520px]
                     object-cover
                     transition-all
                     duration-700
@@ -591,13 +616,88 @@ export default function Intro() {
                 </div>
 
                 </div>
-              </motion.a>
+              </motion.button>
             ))}
 
           </div>
         </div>
         </div>
       </div>
+
+      {/* PROJECT LIGHTBOX */}
+
+      {createPortal(
+      <AnimatePresence>
+        {openProject && (
+          <motion.div
+            key="project-lightbox"
+            role="dialog"
+            aria-modal="true"
+            aria-label={openProject.title}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.35 }}
+            onClick={() => setOpenSlug(null)}
+            className="fixed inset-0 z-[60] bg-black/90 backdrop-blur-md flex items-center justify-center p-4 md:p-10"
+          >
+            <motion.div
+              initial={{ opacity: 0, y: 30, scale: 0.97 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 20, scale: 0.98 }}
+              transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+              onClick={(e) => e.stopPropagation()}
+              className="relative w-full max-w-5xl max-h-full overflow-y-auto grid md:grid-cols-[1.1fr_0.9fr] bg-[#0d0d0d] border border-white/10"
+            >
+              <button
+                type="button"
+                onClick={() => setOpenSlug(null)}
+                aria-label="Close"
+                className="absolute top-3 right-3 z-10 w-10 h-10 rounded-full bg-black/60 border border-white/15 text-white flex items-center justify-center hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+              >
+                <X size={18} />
+              </button>
+
+              <img
+                src={openProject.src}
+                alt={openProject.title}
+                className="w-full h-[50vh] md:h-[80vh] max-h-[720px] object-cover"
+              />
+
+              <div className="p-8 md:p-12 flex flex-col justify-center">
+                <p className="text-[#d4af37] uppercase tracking-[0.35em] text-[10px]">
+                  {openProject.category}
+                </p>
+                <h4 className="mt-4 text-white font-serif font-light text-4xl md:text-5xl leading-tight">
+                  {openProject.title}
+                </h4>
+                <p className="mt-3 text-white/40 uppercase tracking-[0.25em] text-[11px]">
+                  {openProject.type}
+                </p>
+                <div className="w-10 h-px bg-[#d4af37] my-8" />
+                <p className="text-stone-400 leading-relaxed">
+                  Planning a {openProject.type.toLowerCase()} project of your own?
+                  Tell us about it and we'll show you more work like this.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setOpenSlug(null);
+                    requestContact({
+                      message: `I saw "${openProject.title}" on your website and would like to discuss a similar project.`,
+                    });
+                  }}
+                  className="mt-8 self-start px-8 py-4 bg-[#d4af37] text-black uppercase tracking-[0.25em] text-xs hover:bg-[#e8cf7a] transition-colors"
+                >
+                  Start a Similar Project
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>,
+      document.body
+      )}
 
     </section>
   );
